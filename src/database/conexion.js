@@ -6,13 +6,11 @@ import { fileURLToPath } from "url";
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const envPath = path.resolve(__dirname, "../.env");
 
-// Verificar si el archivo .env existe
 console.log("Buscando .env en:", envPath);
 dotenv.config({ path: envPath });
 
 const { Pool } = pkg;
 
-// Debug de variables de entorno
 console.log("Variables de entorno cargadas:", {
   user: process.env.DB_USER,
   host: process.env.DB_HOST,

@@ -3,7 +3,6 @@ const { verPedidos, crearPedido, actualizarPedido } = require("../controllers/pe
 
 const router = express.Router();
 
-// Rutas de pedidos
 router.get("/", verPedidos);
 router.post("/", crearPedido);
 router.put("/:id", actualizarPedido); 
