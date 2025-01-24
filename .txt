@@ -1,0 +1,96 @@
+La configuracion necesaria para la base de datos
+
+iniciar postgres
+psql -U postgres
+
+crear una base de datos
+CREATE DATABASE restaurante;
+
+para usar la base de datos
+\c restaurante
+
+ver bases de datos
+\l
+
+para salir
+\q
+
+para ver las tablas
+\dt
+
+para ver la tablas
+SELECT * FROM nombre_tabla;
+
+CREATE DATABASE restaurante;
+
+-- Crear tipos ENUM para campos predefinidos
+-- Tipo de Pedido: Define cómo se entregará el pedido
+CREATE TYPE tipo_pedido AS ENUM ('Para llevar', 'En el sitio', 'A domicilio');
+
+-- Estado del Pedido: Define las etapas del pedido
+CREATE TYPE estado_pedido AS ENUM ('En espera', 'En preparación', 'Listo', 'Despachado');
+
+-- Tipo de Empaque: Define el empaque según el consumo
+CREATE TYPE tipo_empaque AS ENUM ('Para llevar', 'Consumo en el sitio');
+
+-- Tabla de Restaurantes
+CREATE TABLE restaurantes (
+    id SERIAL PRIMARY KEY,
+    nombre VARCHAR(255) NOT NULL,
+    logo BYTEA, -- Para guardar imágenes del logo
+    fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Tabla de Usuarios
+CREATE TABLE usuarios (
+    id SERIAL PRIMARY KEY,
+    nombre_usuario VARCHAR(255) UNIQUE NOT NULL,
+    contrasena VARCHAR(255) NOT NULL, 
+    rol VARCHAR(50) NOT NULL, -- 'cliente', 'administrador', 'cocina'
+    fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Tabla de Productos
+CREATE TABLE productos (
+    id SERIAL PRIMARY KEY,
+    restaurante_id INT REFERENCES restaurantes(id),
+    nombre VARCHAR(255) NOT NULL,
+    descripcion TEXT,
+    precio NUMERIC(10, 2) NOT NULL,
+    disponible BOOLEAN DEFAULT TRUE,
+    fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Tabla de Pedidos
+CREATE TABLE pedidos (
+    id SERIAL PRIMARY KEY,
+    cliente_id INT REFERENCES usuarios(id), -- Cliente que realizó el pedido
+    restaurante_id INT REFERENCES restaurantes(id),
+    nombre_cliente VARCHAR(255) NOT NULL,
+    direccion TEXT, -- Dirección para pedidos a domicilio (puede ser NULL)
+    tipo tipo_pedido NOT NULL, -- Usando ENUM para el tipo de pedido
+    estado estado_pedido NOT NULL DEFAULT 'En espera', -- Usando ENUM para el estado del pedido
+    fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Tabla de Detalles de Pedidos
+CREATE TABLE detalles_pedido (
+    id SERIAL PRIMARY KEY,
+    pedido_id INT REFERENCES pedidos(id),
+    producto_id INT REFERENCES productos(id),
+    cantidad INT NOT NULL,
+    observaciones TEXT,
+    tipo_empaque tipo_empaque NOT NULL, -- Usando ENUM para el tipo de empaque
+    precio_total NUMERIC(10, 2) NOT NULL
+);
+
+-- Tabla de Descuentos (Opcional)
+CREATE TABLE descuentos (
+    id SERIAL PRIMARY KEY,
+    nombre VARCHAR(255),
+    descripcion TEXT,
+    porcentaje NUMERIC(5, 2),
+    valido_desde DATE,
+    valido_hasta DATE
+);
+
