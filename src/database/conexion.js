@@ -25,7 +25,7 @@ const pool = new Pool({
   user: String(process.env.DB_USER || "postgres"),
   host: String(process.env.DB_HOST || "localhost"),
   database: String(process.env.DB_NAME || "theorder"),
-  password: String(process.env.DB_PASSWORD || "7077"),
+  password: String(process.env.DB_PASSWORD || "1065"),
   port: Number(process.env.DB_PORT || 5432),
 });
 
