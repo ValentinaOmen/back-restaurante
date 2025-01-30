@@ -6,11 +6,13 @@ import { fileURLToPath } from "url";
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const envPath = path.resolve(__dirname, "../.env");
 
+// Verificar si el archivo .env existe
 console.log("Buscando .env en:", envPath);
 dotenv.config({ path: envPath });
 
 const { Pool } = pkg;
 
+// Debug de variables de entorno
 console.log("Variables de entorno cargadas:", {
   user: process.env.DB_USER,
   host: process.env.DB_HOST,
@@ -22,8 +24,8 @@ console.log("Variables de entorno cargadas:", {
 const pool = new Pool({
   user: String(process.env.DB_USER || "postgres"),
   host: String(process.env.DB_HOST || "localhost"),
-  database: String(process.env.DB_NAME || "restaurante"),
-  password: String(process.env.DB_PASSWORD || "1065"),
+  database: String(process.env.DB_NAME || "theorder"),
+  password: String(process.env.DB_PASSWORD || "7077"),
   port: Number(process.env.DB_PORT || 5432),
 });
 

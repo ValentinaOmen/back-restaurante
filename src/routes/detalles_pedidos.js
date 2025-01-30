@@ -1,5 +1,5 @@
 import Router from "express";
-import { actualizar, buscar, eliminar, listar, registrar } from "../controller/detalles_pedidos.controller.js";
+import { actualizar, buscar, eliminar, listar, registrar } from "../controller/detalles_pedidos.js";
 import { validarToken } from "../controller/seguridad.controller.js";
 
 const rutaDPedidos = Router();

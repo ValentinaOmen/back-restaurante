@@ -17,8 +17,7 @@ export const listar = async (req, res) => {
 
 export const registrarUsuario = async (req, res) => {
   const { id_restaurante, nombre, correo, contrasena, rol, fecha } = req.body;
-
-  // Validar campos
+ 
   if (!id_restaurante || !nombre || !correo || !contrasena || !rol || !fecha) {
     return res.status(400).json({ message: "Todos los campos son obligatorios" });
   }

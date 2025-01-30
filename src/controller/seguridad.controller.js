@@ -93,3 +93,49 @@ export const validarToken = async (req, res, next) => {
     });
   }
 };
+
+// Agregar esta nueva función para registro público
+export const registroPublico = async (req, res) => {
+  const { id_restaurante, nombre, correo, contrasena, fecha } = req.body;
+ 
+  if (!nombre || !correo || !contrasena) {
+    return res.status(400).json({ message: "Nombre, correo y contraseña son obligatorios" });
+  }
+
+  try {
+    const existingUserQuery = "SELECT * FROM usuarios WHERE correo = $1";
+    const existingUserResult = await pool.query(existingUserQuery, [correo]);
+
+    if (existingUserResult.rows.length > 0) {
+      return res.status(409).json({ message: "El correo ya está registrado" });
+    }
+
+    // Encriptar la contraseña
+    const hashedPassword = await bcrypt.hash(contrasena, 10);
+
+    const sql = `
+    INSERT INTO usuarios (id_restaurante, nombre, correo, contrasena, rol, fecha)
+    VALUES ($1, $2, $3, $4, $5, $6) RETURNING id_usuario`;
+    
+    // Por defecto, asignar rol de cliente
+    const rol = 'Cliente';
+    const id_restaurante = 1; // Restaurante por defecto
+    
+    const result = await pool.query(sql, [
+      id_restaurante, 
+      nombre, 
+      correo, 
+      hashedPassword,
+      rol,
+      fecha || new Date()
+    ]);
+
+    res.status(201).json({
+      id_usuario: result.rows[0].id_usuario,
+      message: "Usuario registrado exitosamente",
+    });
+  } catch (error) {
+    console.error("Error al registrar usuario:", error);
+    res.status(500).json({ message: "Error al registrar usuario" });
+  }
+};
